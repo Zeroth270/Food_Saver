@@ -11,7 +11,7 @@ public class Food {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long foodId;
 
     private String title;
     private String description;
@@ -21,8 +21,11 @@ public class Food {
     private boolean isFree;
     private Date availableTill;
     private String location;
-    private String status; //AVAILABLE, EXPIRED, COMPLETED)
+    private String status; //AVAILABLE, EXPIRED, COMPLETED
     private Date createdAt;
+
+    @OneToMany
+    private User userId;
 
 
 }
