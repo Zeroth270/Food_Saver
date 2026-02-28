@@ -1,7 +1,7 @@
 package com.Food_Saver.demo.controller;
 
-import com.Food_Saver.demo.DTO.LoggingUserDto;
-import com.Food_Saver.demo.DTO.RegisterUserDto;
+import com.Food_Saver.demo.dto.LoggingUserDto;
+import com.Food_Saver.demo.dto.RegisterUserDto;
 import com.Food_Saver.demo.entity.User;
 import com.Food_Saver.demo.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;

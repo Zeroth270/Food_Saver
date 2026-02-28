@@ -1,4 +1,4 @@
-package com.Food_Saver.demo.DTO;
+package com.Food_Saver.demo.dto;
 
 import lombok.Data;
 

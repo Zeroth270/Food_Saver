@@ -24,7 +24,8 @@ public class Food {
     private String status; //AVAILABLE, EXPIRED, COMPLETED
     private Date createdAt;
 
-    @OneToMany
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User userId;
 
 

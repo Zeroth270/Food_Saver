@@ -1,7 +1,7 @@
 package com.Food_Saver.demo.service;
 
-import com.Food_Saver.demo.DTO.LoggingUserDto;
-import com.Food_Saver.demo.DTO.RegisterUserDto;
+import com.Food_Saver.demo.dto.LoggingUserDto;
+import com.Food_Saver.demo.dto.RegisterUserDto;
 import com.Food_Saver.demo.entity.User;
 import com.Food_Saver.demo.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,6 @@ public class AuthService {
 
         return user;
     }
-
-
 
 }
 

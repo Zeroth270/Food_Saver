@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface ContactRepo extends JpaRepository<Contact,Long> {
 
-    @Query("SELECT f FROM Food f WHERE f.id = :foodId")
+    @Query("SELECT f FROM Food f WHERE f.foodId = :foodId")
     Optional<Food> findByFoodId(Food foodId);
 
 }
