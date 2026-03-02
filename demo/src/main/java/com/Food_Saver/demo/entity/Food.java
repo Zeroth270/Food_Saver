@@ -1,8 +1,10 @@
 package com.Food_Saver.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -15,18 +17,31 @@ public class Food {
 
     private String title;
     private String description;
-    private String foodType; //Veg or NonVeg
+    private String foodType; // Veg or NonVeg
     private String quantity;
     private double price;
-    private boolean isFree;
+
+    @Column(name = "is_free", nullable = false, columnDefinition = "bit default 0")
+    private boolean free;
+
     private Date availableTill;
     private String location;
-    private String status; //AVAILABLE, EXPIRED, COMPLETED
-    private Date createdAt;
+        private double latitude;
+    private double longitude;
+
+    @Enumerated(EnumType.STRING)
+    private FoodStatus status;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
-
+    @JsonIgnoreProperties({ "password", "createdAt" })
+    private User user;
 
 }

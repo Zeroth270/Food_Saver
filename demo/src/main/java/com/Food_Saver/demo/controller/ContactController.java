@@ -3,12 +3,14 @@ package com.Food_Saver.demo.controller;
 import com.Food_Saver.demo.dto.ContactRequestDto;
 import com.Food_Saver.demo.entity.Contact;
 import com.Food_Saver.demo.service.ContactService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/contact")
+@Tag(name = "Contact APIs", description = "Contact With Each Other")
 public class ContactController {
 
     @Autowired

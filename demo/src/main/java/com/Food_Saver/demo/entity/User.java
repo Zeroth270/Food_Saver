@@ -1,12 +1,9 @@
 package com.Food_Saver.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,9 +17,21 @@ public class User {
     private String email;
     private String password;
     private String phoneNumber;
-    private String role;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     private double notificationRadius;
     private boolean notificationEnabled;
-    private Date createdAt;
+
+    private double latitude;
+    private double longitude;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
 }

@@ -17,7 +17,8 @@ public class Contact {
 
     private String message;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ContactStatus status;
 
     private LocalDateTime createdAt;
 
@@ -29,6 +30,9 @@ public class Contact {
     @JoinColumn(name = "user_id")
     private User receiver;
 
-
+    @PrePersist
+    public void onCreate(){
+        this.createdAt = LocalDateTime.now();
+    }
 
 }
