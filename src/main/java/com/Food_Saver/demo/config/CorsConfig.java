@@ -14,11 +14,9 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
 
-                registry.addMapping("/**")
-                        .allowedOrigins(
-                                "https://food-saver-frontend-two.vercel.app"
-                        )
-                        .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
+                registry.addMapping("/**")registry.addMapping("/**")
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
