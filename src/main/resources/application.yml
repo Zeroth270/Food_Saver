@@ -7,6 +7,10 @@ spring:
     username: root
     password: yTjnvaYWMwPSnNTpmvyLBAprZQEEJDaG
 
+#    url: jdbc:mysql://localhost:3306/food_saver
+#    username: root
+#    password: Bankai
+
   jpa:
     hibernate:
       ddl-auto: update
