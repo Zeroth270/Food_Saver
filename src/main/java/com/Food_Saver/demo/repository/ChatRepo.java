@@ -2,15 +2,12 @@ package com.Food_Saver.demo.repository;
 
 import com.Food_Saver.demo.entity.Chat;
 import com.Food_Saver.demo.entity.Conversation;
-import com.Food_Saver.demo.entity.Food;
-import com.Food_Saver.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ChatRepo extends JpaRepository<Chat, Long> {
