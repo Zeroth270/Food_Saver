@@ -1,11 +1,13 @@
 package com.Food_Saver.demo.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,8 +27,11 @@ public class Food {
     private boolean free;
 
     private Date availableTill;
+
     private String location;
-        private double latitude;
+
+    private double latitude;
+
     private double longitude;
 
     @Enumerated(EnumType.STRING)
@@ -43,5 +48,12 @@ public class Food {
     @JoinColumn(name = "user_id")
     @JsonIgnoreProperties({ "password", "createdAt" })
     private User user;
+
+    @OneToMany(mappedBy = "food",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+
+    @JsonManagedReference
+    private List<Contact> contacts;
 
 }

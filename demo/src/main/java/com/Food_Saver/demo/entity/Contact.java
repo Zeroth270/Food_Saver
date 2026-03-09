@@ -1,11 +1,10 @@
 package com.Food_Saver.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Data
@@ -23,10 +22,11 @@ public class Contact {
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "food_id")
-    private Food foodPostId;
+    private Food food;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User receiver;
 

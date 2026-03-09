@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ContactRepo extends JpaRepository<Contact, Long> {
 
-    @Query("SELECT c FROM Contact c WHERE c.foodPostId.foodId = :foodId")
+    @Query("SELECT c FROM Contact c WHERE c.food.foodId = :foodId")
     List<Contact> findByFoodId(@Param("foodId") Long foodId);
 
 }

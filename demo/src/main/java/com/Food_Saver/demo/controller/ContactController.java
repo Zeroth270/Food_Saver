@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/contact")
 @Tag(name = "Contact APIs", description = "Contact With Each Other")
@@ -21,29 +23,35 @@ public class ContactController {
             @PathVariable Long foodId,
             @PathVariable Long receiverId,
             @RequestBody ContactRequestDto requestDto) {
-        Contact postContact = contactService.sendRequest(foodId,requestDto.getMessage(),receiverId);
+        Contact postContact = contactService.sendRequest(foodId, requestDto.getMessage(), receiverId);
         return ResponseEntity.ok(postContact);
     }
 
     @GetMapping("/myRequest/{requestId}")
     public ResponseEntity<?> getMyRequest(
-            @PathVariable Long requestId){
+            @PathVariable Long requestId) {
         Contact foodRequest = contactService.getMyFoodRequest(requestId);
         return ResponseEntity.ok(foodRequest);
     }
 
     @PutMapping("/accept/{requestId}")
     public ResponseEntity<?> acceptRequest(
-            @PathVariable Long requestId){
+            @PathVariable Long requestId) {
         Contact accept = contactService.requestAccepted(requestId);
         return ResponseEntity.ok(accept);
     }
 
     @PutMapping("/reject/{requestId}")
-    public ResponseEntity<?> rejectRequest(
-            @PathVariable Long requestId){
-        Contact reject = contactService.rejectRequest(requestId);
+    public ResponseEntity<?> requestReject(
+            @PathVariable Long requestId) {
+        Contact reject = contactService.requestReject(requestId);
         return ResponseEntity.ok(reject);
+    }
+
+    @GetMapping("/food/{foodId}")
+    public ResponseEntity<List<Contact>> getRequestsByFoodId(@PathVariable Long foodId) {
+        List<Contact> requests = contactService.getRequestsByFoodId(foodId);
+        return ResponseEntity.ok(requests);
     }
 
 }

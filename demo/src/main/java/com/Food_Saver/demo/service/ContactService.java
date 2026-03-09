@@ -7,25 +7,25 @@ import com.Food_Saver.demo.entity.User;
 import com.Food_Saver.demo.repository.ContactRepo;
 import com.Food_Saver.demo.repository.FoodRepo;
 import com.Food_Saver.demo.repository.UserRepo;
-import org.jspecify.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ContactService {
 
-    @Autowired
-    private FoodRepo foodRepo;
+    private final FoodRepo foodRepo;
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
-    @Autowired
-    private ContactRepo contactRepo;
+    private final ContactRepo contactRepo;
+
+    private final SimpMessagingTemplate messageTemplate;
 
     public Contact sendRequest(Long foodId, String message, Long receiverId) {
 
@@ -37,7 +37,7 @@ public class ContactService {
 
         Contact request = new Contact();
         request.setMessage(message);
-        request.setFoodPostId(food);
+        request.setFood(food);
         request.setReceiver(receiver);
         request.setCreatedAt(LocalDateTime.now());
         request.setStatus(ContactStatus.PENDING);
@@ -50,21 +50,48 @@ public class ContactService {
                 .orElseThrow(() -> new RuntimeException("Food Request Not Found!!"));
     }
 
+    @Transactional
     public Contact requestAccepted(Long requestId) {
         Contact req = contactRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request Not Found"));
 
         req.setStatus(ContactStatus.ACCEPT);
-        return contactRepo.save(req);
+        Contact saveReq =  contactRepo.save(req);
+
+        String receiverEmail = saveReq.getReceiver().getEmail();
+
+        String foodTitle = saveReq.getFood().getTitle();
+
+        if (receiverEmail != null && foodTitle != null) {
+            messageTemplate.convertAndSendToUser(receiverEmail, "/queue/notifications",
+                    "Your request for '" + foodTitle + "' is accepted!");
+        }
+        return saveReq;
     }
 
-    public Contact rejectRequest(Long requestId) {
+    @Transactional
+    public Contact requestReject(Long requestId) {
         Contact req = contactRepo.findById(requestId)
                 .orElseThrow(() -> new RuntimeException("Request Id Not Found!!"));
 
         req.setStatus(ContactStatus.REJECT);
 
-        return contactRepo.save(req);
+        Contact saveReq = contactRepo.save(req);
+
+        String receiverEmail = saveReq.getReceiver().getEmail();
+
+        String foodTitle = saveReq.getFood().getTitle();
+
+        if (receiverEmail != null && foodTitle != null) {
+            messageTemplate.convertAndSendToUser(receiverEmail, "/queue/notifications",
+                    "Your request for '" + foodTitle + "' has been rejected.");
+        }
+
+        return saveReq;
+    }
+
+    public List<Contact> getRequestsByFoodId(Long foodId) {
+        return contactRepo.findByFoodId(foodId);
     }
 
 }

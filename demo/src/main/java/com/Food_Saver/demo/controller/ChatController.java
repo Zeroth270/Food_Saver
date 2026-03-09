@@ -1,17 +1,16 @@
 package com.Food_Saver.demo.controller;
 
-import com.Food_Saver.demo.entity.ChatMessage;
+import com.Food_Saver.demo.dto.ConversationDTO;
+import com.Food_Saver.demo.entity.Chat;
 import com.Food_Saver.demo.repository.ChatRepo;
+import com.Food_Saver.demo.service.ChatService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/chat")
@@ -19,29 +18,31 @@ import java.util.List;
 @Tag(name = "Chat APIs", description = "Chat Between Donor And Receiver")
 public class ChatController {
 
-    private final SimpMessagingTemplate messagingTemplate;
-    private final ChatRepo chatRepo;
+        private final ChatRepo chatRepo;
+        private final ChatService chatService;
 
-    @MessageMapping("/send")
-    public void sendMessage(ChatMessage message) {
+        @GetMapping("/history")
+        public List<Chat> getHistory(
+                        @RequestParam String sender,
+                        @RequestParam String receiver) {
+                return chatRepo.getChatHistory(sender, receiver);
+        }
 
-        // 1️⃣ Save to DB
-        chatRepo.save(message);
+        @PostMapping("/send/{foodPost}")
+        public ResponseEntity<?> sendMessage(
+                        @PathVariable Long foodPost,
+                        @RequestBody Map<String, String> body) {
 
-        // 2️⃣ Send to receiver
-        messagingTemplate.convertAndSendToUser(
-                message.getReceiverEmail(),
-                "/queue/messages",
-                message
-        );
-    }
+                String message = body.get("message");
 
-    @GetMapping("/history")
-    public List<ChatMessage> getHistory(@RequestParam String sender, @RequestParam String receiver) {
-        return chatRepo.findBySenderEmailAndReceiverEmailOrSenderEmailAndReceiverEmail(
-                sender, receiver, receiver, sender
-        );
-    }
+                return ResponseEntity.ok(chatService.sendMessage(foodPost, message));
+        }
 
+        @GetMapping("/conversations")
+        public ResponseEntity<List<ConversationDTO>> getConversations(
+                        @RequestParam String email) {
+                return ResponseEntity.ok(
+                                chatService.getConversations(email));
+        }
 
 }
