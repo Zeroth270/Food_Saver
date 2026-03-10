@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface ChatRepo extends JpaRepository<Chat, Long> {
 
-    List<Chat> findBySenderEmailAndReceiverEmailOrSenderEmailAndReceiverEmail(String sender, String receiver,
-            String receiver1, String sender1);
-
     @Query("""
                 SELECT c FROM Chat c
                 WHERE (c.senderEmail = :sender AND c.receiverEmail = :receiver)
@@ -24,17 +21,6 @@ public interface ChatRepo extends JpaRepository<Chat, Long> {
     List<Chat> getChatHistory(
             @Param("sender") String sender,
             @Param("receiver") String receiver);
-
-    List<Chat> findBySenderEmailOrReceiverEmail(
-            String senderEmail,
-            String receiverEmail);
-
-    @Query("""
-                SELECT c FROM Chat c
-                WHERE c.senderEmail = :email OR c.receiverEmail = :email
-                ORDER BY c.timestamp DESC
-            """)
-    List<Chat> findAllUserChats(@Param("email") String email);
 
     @Query("""
                 SELECT c FROM Chat c

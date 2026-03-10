@@ -30,4 +30,7 @@ public interface ConversationRepo extends JpaRepository<Conversation, Long> {
     List<Conversation> findByDonorEmailOrReceiverEmail(
             String donorEmail,
             String receiverEmail);
+
+    // Find conversations where this donor is involved for a specific food post
+    Optional<Conversation> findByDonorEmailAndFoodPost(String donorEmail, String foodPost);
 }

@@ -8,6 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
+
 @Controller
 @RequiredArgsConstructor
 @Tag(name = "WebSocket APIs", description = "Operations related Chat")
@@ -17,8 +19,16 @@ public class WebSocketController {
     private final ChatService chatService;
 
     @MessageMapping("/send")
-    public void sendMessage(Chat message,
+    public void sendMessage(Chat message, Principal principal,
             @org.springframework.messaging.handler.annotation.Header(value = "foodPostId", required = false) String foodPostId) {
+
+        // Bug 6 fix: Override sender email from the authenticated principal to prevent spoofing
+        if (principal != null) {
+            message.setSenderEmail(principal.getName());
+        }
+
+        // Bug 5 fix: Force new insert to prevent overwriting existing messages
+        message.setChatId(null);
 
         // Associate message with a conversation if foodPostId is available
         if (foodPostId != null && message.getConversation() == null) {
