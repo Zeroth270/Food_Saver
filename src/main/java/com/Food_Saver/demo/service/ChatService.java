@@ -39,56 +39,65 @@ public class ChatService {
                 .orElseThrow(() -> new RuntimeException("Food Not found"));
 
         // The current user is the SENDER (whoever hits the API)
-        // The donor (food owner) is the other party
         String senderEmail = currentUser.getEmail();
         String donorEmail = food.getUser().getEmail();
 
-        // The receiver is whichever party is NOT the current user
-        String receiverEmail = donorEmail.equals(senderEmail)
-                ? // current user IS the donor, so receiver must be looked up from existing
-                  // conversation
-                null // will be resolved below
-                : donorEmail;
+        // Determine who the receiver of this message is
+        String receiverEmail;
+        boolean senderIsDonor = donorEmail.equals(senderEmail);
 
-        // Look up or create conversation
         String foodPostStr = String.valueOf(foodPostId);
 
-        Optional<Conversation> existing = conversationRepo.findConversation(senderEmail, donorEmail, foodPostStr);
+        if (senderIsDonor) {
+            // Bug 4 fix: Donor is replying — find existing conversation for this food post
+            Optional<Conversation> existing = conversationRepo.findByDonorEmailAndFoodPost(donorEmail, foodPostStr);
+            if (existing.isPresent()) {
+                Conversation conversation = existing.get();
+                receiverEmail = conversation.getReceiverEmail();
 
-        Conversation conversation;
-
-        if (existing.isPresent()) {
-            conversation = existing.get();
-            // If current user is the donor, resolve receiver from the conversation
-            if (receiverEmail == null) {
-                receiverEmail = conversation.getDonorEmail().equals(senderEmail)
-                        ? conversation.getReceiverEmail()
-                        : conversation.getDonorEmail();
+                // Save chat message
+                Chat chat = new Chat();
+                chat.setSenderEmail(senderEmail);
+                chat.setReceiverEmail(receiverEmail);
+                chat.setContent(message);
+                chat.setConversation(conversation);
+                return chatRepo.save(chat);
+            } else {
+                throw new RuntimeException("No conversation found. A receiver must initiate the conversation first.");
             }
         } else {
-            // Only a non-donor (receiver) can start a new conversation
-            if (receiverEmail == null) {
-                throw new RuntimeException("Cannot start a conversation with yourself");
+            // Receiver is sending a message to the donor
+            receiverEmail = donorEmail;
+
+            // Look up or create conversation
+            Optional<Conversation> existing = conversationRepo.findConversation(senderEmail, donorEmail, foodPostStr);
+            Conversation conversation;
+
+            if (existing.isPresent()) {
+                conversation = existing.get();
+            } else {
+                // Receiver initiates a new conversation
+                conversation = new Conversation();
+                conversation.setDonorEmail(donorEmail);
+                conversation.setReceiverEmail(senderEmail); // the person initiating is the receiver
+                conversation.setFoodPost(foodPostStr);
+                conversation = conversationRepo.save(conversation);
             }
-            conversation = new Conversation();
-            conversation.setDonorEmail(donorEmail);
-            conversation.setReceiverEmail(senderEmail); // the person initiating is the receiver
-            conversation.setFoodPost(foodPostStr);
-            conversation = conversationRepo.save(conversation);
+
+            // Save chat message
+            Chat chat = new Chat();
+            chat.setSenderEmail(senderEmail);
+            chat.setReceiverEmail(receiverEmail);
+            chat.setContent(message);
+            chat.setConversation(conversation);
+            return chatRepo.save(chat);
         }
-
-        // Save chat message
-        Chat chat = new Chat();
-        chat.setSenderEmail(senderEmail);
-        chat.setReceiverEmail(receiverEmail);
-        chat.setContent(message);
-        chat.setConversation(conversation);
-
-        return chatRepo.save(chat);
     }
 
     /**
      * Find or create a conversation for WebSocket messages.
+     * Bug 1 fix: Look up the food post to determine the actual donor instead of
+     * blindly assuming receiverEmail is the donor.
      */
     public Conversation findOrCreateConversation(String senderEmail, String receiverEmail, String foodPostId) {
         Optional<Conversation> existing = conversationRepo.findConversation(senderEmail, receiverEmail, foodPostId);
@@ -97,9 +106,23 @@ public class ChatService {
             return existing.get();
         }
 
+        // Bug 1 fix: Determine actual donor from the food post
+        String actualDonorEmail = receiverEmail; // default fallback
+        String actualReceiverEmail = senderEmail;
+
+        try {
+            Food food = foodRepo.findById(Long.parseLong(foodPostId)).orElse(null);
+            if (food != null) {
+                actualDonorEmail = food.getUser().getEmail();
+                actualReceiverEmail = actualDonorEmail.equals(senderEmail) ? receiverEmail : senderEmail;
+            }
+        } catch (NumberFormatException ignored) {
+            // If foodPostId is not a valid number, fall back to default
+        }
+
         Conversation conversation = new Conversation();
-        conversation.setDonorEmail(receiverEmail); // assume the other party is the donor
-        conversation.setReceiverEmail(senderEmail);
+        conversation.setDonorEmail(actualDonorEmail);
+        conversation.setReceiverEmail(actualReceiverEmail);
         conversation.setFoodPost(foodPostId);
         return conversationRepo.save(conversation);
     }
