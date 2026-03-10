@@ -2,40 +2,5 @@ spring:
   application:
     name: Food_Saver
 
-  datasource:
-    url: jdbc:mysql://switchyard.proxy.rlwy.net:38106/railway
-    username: root
-    password: yTjnvaYWMwPSnNTpmvyLBAprZQEEJDaG
-
-#    url: jdbc:mysql://localhost:3306/food_saver
-#    username: root
-#    password: Bankai
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    database-platform: org.hibernate.dialect.MySQLDialect
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: sahilkesharwani835@gmail.com
-    password: gtajoyyzqxeqwqyf
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 server:
   port: ${PORT:8080}
