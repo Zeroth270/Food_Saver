@@ -94,11 +94,6 @@ public class ChatService {
         }
     }
 
-    /**
-     * Find or create a conversation for WebSocket messages.
-     * Bug 1 fix: Look up the food post to determine the actual donor instead of
-     * blindly assuming receiverEmail is the donor.
-     */
     public Conversation findOrCreateConversation(String senderEmail, String receiverEmail, String foodPostId) {
         Optional<Conversation> existing = conversationRepo.findConversation(senderEmail, receiverEmail, foodPostId);
 
@@ -186,4 +181,10 @@ public class ChatService {
     public Chat saveMessage(Chat message) {
         return chatRepo.save(message);
     }
+
+    public void deleteConversation(Long convId) {
+        conversationRepo.deleteById(convId);
+    }
+
+
 }
