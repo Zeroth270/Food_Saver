@@ -3,22 +3,21 @@ package com.Food_Saver.demo.controller;
 import com.Food_Saver.demo.service.OtpService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "Auth APIs", description = "User Operations")public class OtpController {
+@Tag(name = "Auth APIs", description = "User Operations")
+public class OtpController {
 
     @Autowired
     private OtpService emailService;
 
     private final Map<String, String> otpStorage = new HashMap<>();
+
 
     // Generate OTP
     public String generateOtp() {
@@ -28,7 +27,9 @@ import java.util.Map;
 
     // Send OTP
     @PostMapping("/send-otp")
-    public String sendOtp(@RequestParam String email) {
+    public String sendOtp(@RequestBody Map<String, String> request) {
+
+        String email = request.get("email");
 
         String otp = generateOtp();
 
@@ -41,8 +42,10 @@ import java.util.Map;
 
     // Verify OTP
     @PostMapping("/verify-otp")
-    public String verifyOtp(@RequestParam String email,
-                            @RequestParam String otp) {
+    public String verifyOtp(@RequestBody Map<String, String> request) {
+
+        String email = request.get("email");
+        String otp = request.get("otp");
 
         String storedOtp = otpStorage.get(email);
 
@@ -53,5 +56,4 @@ import java.util.Map;
 
         return "Invalid OTP";
     }
-
 }
