@@ -1,5 +1,6 @@
 package com.Food_Saver.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ public class Chat {
     @Column(length = 1000)
     private String content;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "conversation_id")
     private Conversation conversation;

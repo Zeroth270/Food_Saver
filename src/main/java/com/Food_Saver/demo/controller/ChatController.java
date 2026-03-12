@@ -6,6 +6,7 @@ import com.Food_Saver.demo.repository.ChatRepo;
 import com.Food_Saver.demo.service.ChatService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,12 @@ public class ChatController {
                         @RequestParam String email) {
                 return ResponseEntity.ok(
                                 chatService.getConversations(email));
+        }
+
+        @DeleteMapping("/delete/{convId}")
+        public ResponseEntity<Chat> deleteConversations(@PathVariable Long convId) {
+                chatService.deleteConversation(convId);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
 }
