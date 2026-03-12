@@ -20,7 +20,7 @@ spring:
 
   mail:
     host: smtp-relay.brevo.com
-    port: 587
+    port: 2525
     username: ${BRAVO_MAIL_USERNAME}
     password: ${BRAVO_MAIL_PASSWORD}
     properties:
