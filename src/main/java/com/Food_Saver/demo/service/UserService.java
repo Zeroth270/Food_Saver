@@ -30,7 +30,7 @@ public class UserService {
         User exitingUser = userRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("User Not Found Of This Id!!"));
 
-        exitingUser.setName(updatedUser.getName());
+        exitingUser.setUserName(updatedUser.getUsername());
         exitingUser.setEmail(updatedUser.getEmail());
         exitingUser.setPassword(updatedUser.getPassword());
         exitingUser.setPhoneNumber(updatedUser.getPhoneNumber());

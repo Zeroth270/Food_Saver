@@ -1,22 +1,15 @@
 package com.Food_Saver.demo.controller;
 
-import com.Food_Saver.demo.dto.LoggingUserDto;
-import com.Food_Saver.demo.dto.OtpRequestDto;
+import com.Food_Saver.demo.dto.LoginRequestDto;
 import com.Food_Saver.demo.dto.RegisterUserDto;
-import com.Food_Saver.demo.entity.User;
-import com.Food_Saver.demo.service.AuthService;
-import com.Food_Saver.demo.service.OtpService;
+import com.Food_Saver.demo.security.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 @Tag(name = "Auth APIs", description = "User Operations")
 public class AuthController {
 
@@ -25,15 +18,13 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDto register){
-        User registerUser = authService.registerUser(register);
-        return ResponseEntity.status(HttpStatus.OK).body(registerUser);
+    public ResponseEntity<?> registerUser(@RequestBody RegisterUserDto registerDto) throws IllegalAccessException {
+        return ResponseEntity.ok(authService.registerUser(registerDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoggingUserDto login){
-        User user = authService.loginUser(login);
-        return ResponseEntity.ok(user);
+        public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto loginDto) {
+        return ResponseEntity.ok(authService.loginUser(loginDto));
     }
 
 }

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConversationDTO {
+
     private Long conversationId;
     private String partnerEmail;
     private String lastMessage;

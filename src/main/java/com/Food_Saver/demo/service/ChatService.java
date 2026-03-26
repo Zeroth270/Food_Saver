@@ -26,6 +26,7 @@ public class ChatService {
     private final ConversationRepo conversationRepo;
 
     public User getCurrentUser() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return userRepo.findByEmail(email)
@@ -39,7 +40,11 @@ public class ChatService {
                 .orElseThrow(() -> new RuntimeException("Food Not found"));
 
         // The current user is the SENDER (whoever hits the API)
+<<<<<<< HEAD
+        String senderEmail = currentUser.getUsername();
+=======
         String senderEmail = currentUser.getEmail();
+>>>>>>> 1c980c4e8a76729511899282596216b0444cbc6d
         String donorEmail = food.getUser().getEmail();
 
         // Determine who the receiver of this message is
@@ -137,7 +142,7 @@ public class ChatService {
 
             // Look up partner name
             String partnerName = userRepo.findByEmail(partnerEmail)
-                    .map(User::getName)
+                    .map(User::getUsername)
                     .orElse(partnerEmail);
 
             // Look up food title
