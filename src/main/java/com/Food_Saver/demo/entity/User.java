@@ -1,19 +1,28 @@
 package com.Food_Saver.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Data
-public class User {
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
 
-    private String name;
+    private String userName;
     private String email;
     private String password;
     private String phoneNumber;
@@ -33,5 +42,16 @@ public class User {
     public void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
 
 }

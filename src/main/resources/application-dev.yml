@@ -28,4 +28,7 @@ spring:
         smtp:
           auth: true
           starttls:
-            enable: true
+            enable:
+
+jwt:
+  secreteKey: "jrnvw9g57yghlebrlgiu34p8tyqh9pghuinbagjkebrhfbgo38q74yprh98whfrabjgjfhgt8w7o4ty2790yt98hrgfuga8438r4398hfbdkhgbja"

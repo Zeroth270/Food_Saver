@@ -1,14 +1,13 @@
 package com.Food_Saver.demo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class RegisterUserDto {
+@AllArgsConstructor
+public class LoginRequestDto {
 
-    private String userName;
     private String email;
     private String password;
-    private String role;
-    private String phoneNumber;
 
 }
