@@ -21,14 +21,14 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: MAIL_USERNAME
-    password: MAIL_PASSWORD
+    username: your_email@gmail.com
+    password: your_app_password
     properties:
       mail:
         smtp:
           auth: true
           starttls:
-            enable:
+            enable: true
 
 jwt:
   secreteKey: "jrnvw9g57yghlebrlgiu34p8tyqh9pghuinbagjkebrhfbgo38q74yprh98whfrabjgjfhgt8w7o4ty2790yt98hrgfuga8438r4398hfbdkhgbja"

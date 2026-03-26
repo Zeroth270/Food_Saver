@@ -22,6 +22,11 @@ public class ChatController {
         private final ChatRepo chatRepo;
         private final ChatService chatService;
 
+        // NOTE: Bugs 2 & 3 (auth bypass) cannot be fully fixed until proper JWT
+        // authentication is configured in SecurityConfig.java (currently permitAll).
+        // Once JWT auth is enabled, replace @RequestParam email with
+        // SecurityContextHolder.getContext().getAuthentication().getName()
+
         @GetMapping("/history")
         public List<Chat> getHistory(
                         @RequestParam String sender,

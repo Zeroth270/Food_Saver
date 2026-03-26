@@ -19,17 +19,13 @@ spring:
             client-secret: GOOGLE_CLIENT_SECRET
 
   mail:
-    host: smtp-relay.brevo.com
+    host: smtp.gmail.com
     port: 587
-    username: BRAVO_MAIL_USERNAME
-    password: BRAVO_MAIL_PASSWORD
+    username: your_email@gmail.com
+    password: your_app_password
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-            required: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
